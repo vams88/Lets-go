@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Let's Go — Admin Dashboard</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6f8;color:#171820}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .topbar{background:#171820;color:#fff;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:10}
+    .brand{font-size:24px;font-weight:800}.sub{font-size:13px;color:#aeb2bf;margin-top:2px}
+    .logout{border:1px solid #555968;background:transparent;color:#fff;border-radius:10px;padding:10px 14px}
+    main{max-width:1050px;margin:0 auto;padding:22px}
+    .card{background:#fff;border:1px solid #e2e4e9;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+    h1,h2,h3{margin:0 0 14px}.muted{color:#6b707c}.hidden{display:none!important}
+    label{display:block;font-weight:700;margin:14px 0 7px}
+    input,textarea{width:100%;border:1px solid #cfd2d8;border-radius:12px;padding:13px;background:#fff}
+    textarea{min-height:100px;resize:vertical}
+    .primary{width:100%;border:0;background:#171820;color:#fff;border-radius:12px;padding:14px;font-weight:800;margin-top:18px}
+    .secondary{border:1px solid #cfd2d8;background:#fff;border-radius:10px;padding:10px 14px}
+    .danger{border:0;background:#b42318;color:#fff;border-radius:10px;padding:11px 16px;font-weight:700}
+    .success{border:0;background:#087443;color:#fff;border-radius:10px;padding:11px 16px;font-weight:700}
+    .notice{padding:13px 15px;border-radius:12px;margin:12px 0;background:#f0f1f4}
+    .error{background:#fff0ef;color:#a52820}.ok{background:#ecfdf3;color:#087443}
+    .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .app-row{border:1px solid #e0e2e7;border-radius:14px;padding:16px;margin-top:12px}
+    .row-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .pill{display:inline-block;padding:5px 10px;border-radius:999px;background:#fff3cd;font-size:12px;font-weight:800}
+    .meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;margin-top:12px}
+    .meta div{padding:8px 0;border-bottom:1px solid #eee}.meta b{display:block;font-size:12px;color:#727784;margin-bottom:2px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .admin-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:10px}
+    .admin-tab{border:1px solid #cfd2d8;background:#fff;border-radius:10px;padding:11px 12px;font-weight:800;min-width:0;white-space:nowrap}
+    .admin-tab.active{background:#171820;color:#fff;border-color:#171820}
+    @media(max-width:650px){
+      .admin-tabs{grid-template-columns:1fr 1fr}
+      .admin-tab:last-child{grid-column:1 / -1}
+    }
+    select.secondary{cursor:pointer}
+    .booking-card{border:1px solid #e0e2e7;border-radius:14px;padding:16px;margin-top:12px;background:#fff}.booking-card.needs-attention{border-color:#e0a000;box-shadow:0 0 0 2px rgba(224,160,0,.10)}.attention-banner{padding:11px 13px;border-radius:11px;background:#fff8df;color:#795600;font-weight:800;margin:12px 0}.assignment-state{font-size:13px;margin-top:5px}.cancel-booking-btn{border:1px solid #b42318;background:#fff;color:#b42318;border-radius:10px;padding:10px 14px;font-weight:800}
+    .active-rides-panel{border-color:#d9dce3}.active-ride-card{border:1px solid #e0e2e7;border-radius:14px;padding:15px;margin-top:12px;background:#fff}.active-ride-card.in-progress{border-color:#9aa8ff;box-shadow:0 0 0 2px rgba(100,110,230,.08)}.active-ride-card.accepted{border-color:#9ed3b7}.active-ride-badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:850}.active-ride-badge.accepted{background:#ecfdf3;color:#087443}.active-ride-badge.in-progress{background:#eef0ff;color:#4148a3}.active-ride-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 16px;margin-top:12px}.elapsed{font-weight:800}.payment-watch{margin-top:12px}.payment-watch.warning{background:#fff8df;color:#795600}.payment-watch.ok{background:#ecfdf3;color:#087443}.payment-issues-panel{border-color:#ead9a7}.payment-issue-card{border:1px solid #ead9a7;border-radius:14px;padding:15px;margin-top:12px;background:#fffdf5}.payment-issue-badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:850;background:#fff1bf;color:#795600}.payment-issue-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 16px;margin-top:12px}
+    .partner-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.danger-btn{border:1px solid #d9b6b6;background:#fff;color:#8b2020;border-radius:10px;padding:10px 14px;font-weight:700}.muted-btn{opacity:.65;cursor:default}
+    .partner-card{border:1px solid #e0e2e7;border-radius:14px;padding:16px;margin-top:12px;background:#fff}.partner-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}.partner-summary-card{border:1px solid #e0e2e7;border-radius:14px;padding:15px;background:#fff}.partner-summary-card .label{font-weight:700;color:#666}.partner-summary-card .value{font-size:25px;font-weight:800;margin-top:5px}@media(min-width:760px){.partner-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    .partner-badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:800}
+    .online-badge{background:#ecfdf3;color:#087443}.offline-badge{background:#f0f1f4;color:#5f6470}
+    .booking-status{font-weight:800}
+    .admin-assignment-select{min-width:220px;flex:1}
+    .admin-assign-btn{white-space:nowrap}
+    .status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 16px;margin-top:12px}
+    .overview-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+    .overview-stat{border:1px solid #e0e2e7;border-radius:14px;padding:14px;background:#fff}
+    .overview-stat b{display:block;font-size:12px;color:#727784;margin-bottom:5px}
+    .overview-value{font-size:24px;font-weight:850;line-height:1.1}
+    .overview-sub{font-size:12px;color:#727784;margin-top:5px}
+    @media(max-width:800px){.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.status-grid{grid-template-columns:1fr}.active-ride-grid{grid-template-columns:1fr}.admin-assignment-select{min-width:0;width:100%}.admin-assign-btn{width:100%}}
+    .back{margin-bottom:15px}
+    .doc{width:100%;max-height:520px;object-fit:contain;border:1px solid #ddd;border-radius:12px;background:#fafafa}
+    .pdfbox{padding:18px;border:1px dashed #bbb;border-radius:12px}
+    @media(max-width:650px){main{padding:14px}.card{padding:16px}.meta,.detail-grid{grid-template-columns:1fr}.topbar{padding:15px}.brand{font-size:21px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="brand">Let's Go — Admin</div><div class="sub">Administration Dashboard</div></div>
+    <button id="logoutBtn" class="logout hidden">Log Out</button>
+  </header>
+
+  <main>
+    <section id="loginView" class="card">
+      <h1>Admin Login</h1>
+      <p class="muted">Sign in with an account that has the <b>admin</b> role.</p>
+      <div id="loginMessage"></div>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password">
+      <button id="loginBtn" class="primary">Log In</button>
+    </section>
+
+    <section id="dashboardView" class="hidden">
+      <div class="toolbar card">
+        <div><h1>Dashboard</h1><div class="muted">Let's Go administration</div></div>
+        <button id="refreshBtn" class="secondary">Refresh</button>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h2>Live Overview</h2>
+            <div class="muted">Current booking, partner availability, and completed-fare summary.</div>
+          </div>
+          <span id="overviewUpdated" class="muted">Loading...</span>
+        </div>
+        <div id="overviewMessage"></div>
+        <div id="overviewGrid" class="overview-grid">
+          <div class="overview-stat"><b>Pending</b><div id="overviewPending" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>Accepted</b><div id="overviewAccepted" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>In Progress</b><div id="overviewInProgress" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>Completed</b><div id="overviewCompleted" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>Cancelled</b><div id="overviewCancelled" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>Online Drivers/Riders</b><div id="overviewOnline" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>Offline Drivers/Riders</b><div id="overviewOffline" class="overview-value">—</div></div>
+          <div class="overview-stat"><b>Total Completed Fare</b><div id="overviewFare" class="overview-value">—</div><div class="overview-sub">Completed bookings only</div></div>
+        </div>
+      </div>
+
+      <div class="admin-tabs card">
+        <button id="applicationsTab" class="admin-tab active">Applications</button>
+        <button id="bookingsTab" class="admin-tab">Bookings</button>
+        <button id="partnersTab" class="admin-tab">Drivers/Riders</button>
+      </div>
+
+      <div id="dashboardMessage"></div>
+
+      <div id="applicationsSection">
+        <div id="applicationsList"></div>
+      </div>
+
+      <div id="bookingsSection" class="hidden">
+        <div class="card payment-issues-panel">
+          <div class="toolbar">
+            <div>
+              <h2>Payment Issues</h2>
+              <div class="muted">Completed rides with a missing, incomplete, or inconsistent payment record.</div>
+            </div>
+            <span id="paymentIssuesCount" class="pill">0</span>
+          </div>
+          <div id="paymentIssuesList"></div>
+        </div>
+
+        <div class="card active-rides-panel">
+          <div class="toolbar">
+            <div>
+              <h2>Active Rides</h2>
+              <div class="muted">Accepted and in-progress rides that currently have a Driver/Rider assigned.</div>
+            </div>
+            <span id="activeRidesUpdated" class="muted">Loading...</span>
+          </div>
+          <div id="activeRidesList"></div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div>
+              <h2>Bookings</h2>
+              <div class="muted">All customer rides and their current assignment/payment status.</div>
+            </div>
+            <select id="bookingStatusFilter" class="secondary">
+              <option value="all">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="needs_attention">Needs attention</option>
+            </select>
+          </div>
+        </div>
+        <div id="bookingsList"></div>
+      </div>
+
+      <div id="partnersSection" class="hidden">
+        <div class="card">
+          <div class="toolbar">
+            <div>
+              <h2>Drivers & Riders</h2>
+              <div class="muted">Approved partners, availability, vehicle details, active ride, and basic ride performance.</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+              <select id="partnerStatusFilter" class="secondary">
+                <option value="all">All partners</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+                <option value="busy">On active ride</option>
+                <option value="available">Available</option>
+              </select>
+              <select id="partnerPeriodFilter" class="secondary">
+                <option value="all">All time</option>
+                <option value="today">Today</option>
+                <option value="week">This week</option>
+                <option value="month">This month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div id="partnerSummary" class="partner-summary-grid"></div>
+        <div id="partnersList"></div>
+      </div>
+    </section>
+
+    <section id="detailView" class="hidden">
+      <button id="backBtn" class="secondary back">← Back to Applications</button>
+      <div class="card">
+        <h2>Application Review</h2>
+        <div id="detailMessage"></div>
+        <div id="detailContent"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
+
+
